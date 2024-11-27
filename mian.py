@@ -14,11 +14,10 @@ inactivos,activos=room.get_sin_interaccion(chat)
 Conversation_api = "https://servimaxinternal.app/liveopsapp/getCurrentConversation"
 chat = requests.get(Conversation_api).json()
 activosapi=room.get_api(chat)
-
+# Total
 inactivosFinal=list(set(inactivos) - set(activos))
-print('inactivos final ', len(inactivosFinal))
 
 
-
+room.deliver_custom(inactivosFinal)
 
 
