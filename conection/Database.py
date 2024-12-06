@@ -7,7 +7,7 @@ def conectar_bd():
         host="servimaxinternal.app", 
         user='sergio_naranjo',
         password='5RT_20#',
-        db='MERCADERIA',
+        db='MERCADERIA_BOYACA',
         port=4406 
     )
     
