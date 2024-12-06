@@ -52,27 +52,29 @@ class  isa_bot:
     
     def deliver_custom(self,numeros):
         query="""
-                SELECT ic.valor as Numero,ic.confirmado  as verificacion, 
-                p.noDocumento as documento,p.nombres as cliente,
-                c.nit,c.nombre as Comercio , s.nombre  as barrio ,c.direccion ,
-                ven.asesor
-                from INFO_CONTACTO ic
-                JOIN COMERCIO c  ON c.idComercio  = ic.idComerce
-                JOIN PERSONA p  ON p.noDocumento = ic.fk_noDocumento 
-                join RELACION_SECTORIZACION rs  on rs.id_comercio = ic.idComerce 
-                join SECTORIZACION s on s.idSector=rs.id_sector
-                join PERTENENCIA_COMERCIO_A_ZONA pcaz  on pcaz.fk_idComercio  = c.idComercio
-                join (
- 		            SELECT  noDocumento ,rn.idResponsableNegocio as idasesor ,nombres as asesor ,ar.area
- 		            from  PERSONA p 
-		            join RESPONSABLE_NEGOCIO rn on rn.fk_noDocumento=p.noDocumento
-		            join AREA_RESPONSABLE ar on ar.idarea = rn.area
-		            where rn.idrol=1 
-                ) ven on pcaz.codAsesorTemp = ven.idasesor
-                where s.tipo ='BRR' and ic.valor in ([wtsp]) and c.estado ='ACT'
-        """ 
-        numeros_como_string = ",".join(f"'{number}'" for number in numeros)
-        query=query.replace('[wtsp]', numeros_como_string)  
+                        SELECT ic.valor as Numero,ic.confirmado  as verificacion, 
+                        p.noDocumento as documento,p.nombres as cliente,
+                        c.nit,c.nombre as Comercio , s.nombre  as barrio ,c.direccion ,
+                        ven.asesor
+                        from INFO_CONTACTO ic
+                        JOIN COMERCIO c  ON c.idComercio  = ic.idComerce
+                        JOIN PERSONA p  ON p.noDocumento = ic.fk_noDocumento 
+                        join RELACION_SECTORIZACION rs  on rs.id_comercio = ic.idComerce 
+                        join SECTORIZACION s on s.idSector=rs.id_sector
+                        join PERTENENCIA_COMERCIO_A_ZONA pcaz  on pcaz.fk_idComercio  = c.idComercio
+                        join (
+                            SELECT  noDocumento ,rn.idResponsableNegocio as idasesor ,nombres as asesor ,ar.area
+                            from  PERSONA p 
+                            join RESPONSABLE_NEGOCIO rn on rn.fk_noDocumento=p.noDocumento
+                            join AREA_RESPONSABLE ar on ar.idarea = rn.area
+                            where rn.idrol=1 
+                        ) ven on pcaz.codAsesorTemp = ven.idasesor
+                        where s.tipo ='BRR'  and c.estado ='ACT'
+        """
+        # and ic.valor in ([wtsp])
+         
+        # numeros_como_string = ",".join(f"'{number}'" for number in numeros)
+        # query=query.replace('[wtsp]', numeros_como_string)  
         with self.conxion.cursor() as cursor:
             cursor.execute(query)
             resultado=cursor.fetchall()
@@ -142,7 +144,7 @@ class  isa_bot:
         csv_headers = [
             "Numero", "Verificacion", "Documento", "Cliente", "NIT", "Comercio", "Barrio", "direccion","Asesor Designado", "Grupo", "Visita"
         ]
-        output_file = "clientes_asesoras_designadas.csv"
+        output_file = "Boyaca_clientes_designados.csv"
         with open(output_file, mode="w", newline="", encoding="utf-8") as file:
             writer = csv.writer(file)
             writer.writerow(csv_headers)
